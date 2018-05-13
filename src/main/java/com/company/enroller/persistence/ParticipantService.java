@@ -44,9 +44,9 @@ public class ParticipantService {
 		
 	}
 
-	public void update(Participant participant) {
+	public void update(Participant participant, String login) {
 	
-	Participant tmpParticipant = (Participant) connector.getSession().get(Participant.class, participant.getLogin()); 
+	Participant tmpParticipant = (Participant) connector.getSession().get(Participant.class, login); 
 	
 	Transaction tmpTransaction = connector.getSession().beginTransaction();
 		tmpParticipant.setPassword(participant.getPassword());
