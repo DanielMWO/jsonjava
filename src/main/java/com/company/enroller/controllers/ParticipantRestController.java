@@ -63,11 +63,11 @@ public class ParticipantRestController {
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateParticipant(@PathVariable("id") String login, @RequestBody Participant participant) {
-		if (participantService.findByLogin(participant.getLogin()) == null) {
-			return new ResponseEntity("Unable to update. A participant with login " + participant.getLogin() + " does not exist.", HttpStatus.NOT_FOUND);
+		if (participantService.findByLogin(login) == null) {
+			return new ResponseEntity("Unable to update. A participant with login " + login + " does not exist.", HttpStatus.NOT_FOUND);
 		}
 			
-		participantService.update(participant);
+		participantService.update(participant, login);
 		participant = participantService.findByLogin(login);
 		return new ResponseEntity<Participant>(participant, HttpStatus.CREATED);
 		
