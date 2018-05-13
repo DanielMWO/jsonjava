@@ -71,6 +71,8 @@ public class ParticipantRestController {
 		participant = participantService.findByLogin(login);
 		return new ResponseEntity<Participant>(participant, HttpStatus.CREATED);
 		
+		//ready
+		
 	}
 	
 		 
