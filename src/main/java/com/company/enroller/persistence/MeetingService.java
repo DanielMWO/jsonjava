@@ -26,16 +26,35 @@ public class MeetingService {
 	}
 
 	public Meeting findByID(long id) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return (Meeting) connector.getSession().get(Meeting.class, id);
 	}
 		
 
-	public void addParticipant() {
-		// TODO Auto-generated method stub
-		
+	public void addParticipant(long id, Participant participant) {
+
+		Meeting meeting  = (Meeting) connector.getSession().get(Meeting.class, id);
+		Transaction transaction = connector.getSession().beginTransaction();
+		meeting.addParticipant(participant);
+		connector.getSession().save(meeting);
+		transaction.commit();
 	}
 
+	public Collection<Participant> getParticipants(long id) {
+		Meeting meeting  = (Meeting) connector.getSession().get(Meeting.class, id);
+		Collection<Participant> meetingParticipants = meeting.getParticipants();
+		return  meetingParticipants;
+	}
+
+	public void createMeeting(Meeting meeting) {
+	Transaction tmpTransaction = connector.getSession().beginTransaction();
+		connector.getSession().save(meeting);
+    tmpTransaction.commit();
+		
+	}
 
 
 }
+
+
+

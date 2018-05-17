@@ -43,13 +43,15 @@ public class MeetingRestController {
 	@RequestMapping(value="", method = RequestMethod.POST)
 	public ResponseEntity<?> addMeeting(@RequestBody Meeting meeting) {
 		if (meetingService.findByID(meeting.getId()) == null) {
-			return new ResponseEntity(HttpStatus.CREATED);
+			meetingService.createMeeting(meeting);
+			return new ResponseEntity(meeting, HttpStatus.CREATED);
 			}
 		else {return new ResponseEntity("Meeting already exists", HttpStatus.CONFLICT);}
 	}
-	
-	@RequestMapping(value="/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> addMeeting(@PathVariable("id") long id, @RequestBody String  participantLogin) {
+	//Modify to accept login as JSON not TEXT 
+	//Modifi so that participant cannot be added twice
+	@RequestMapping(value="/{id}/participants", method = RequestMethod.PUT)
+	public ResponseEntity<?> addParticipantToMeeting(@PathVariable("id") long id, @RequestBody String  participantLogin) {
 		if (participantService.findByLogin(participantLogin)==null) 
 				{return new ResponseEntity("Particibant by login: " + participantLogin + "does not exist", HttpStatus.NOT_ACCEPTABLE);
 			}
@@ -58,9 +60,22 @@ public class MeetingRestController {
 		}
 		
 		else {
-			meetingService.addParticipant();
-						
+			Participant participant = participantService.findByLogin(participantLogin);
+			meetingService.addParticipant(id, participant);
+			
 			return new ResponseEntity(HttpStatus.OK);
+		}
+	}
+	@RequestMapping(value="/{id}/participants", method = RequestMethod.GET)
+	public ResponseEntity<?> getParticipantsOfMeeting(@PathVariable("id") long id) {
+		if (meetingService.findByID(id)== null) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		
+		else {
+			Collection<Participant> participants = meetingService.getParticipants(id);
+			
+			return new ResponseEntity(participants, HttpStatus.OK);
 		}
 	}
 	
