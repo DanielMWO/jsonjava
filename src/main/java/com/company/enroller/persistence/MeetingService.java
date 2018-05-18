@@ -82,6 +82,21 @@ public class MeetingService {
 		
 	}
 
+	public Collection<Meeting> getAllSortedByTitle() {
+		String hql = "FROM Meeting m ORDER BY m.title";
+		Query query = connector.getSession().createQuery(hql);
+		return query.list();
+		
+		
+	}
+
+	public Collection<Meeting> search(String wanted) {
+		String hql = "FROM Meeting m WHERE m.title LIKE '%" + wanted + "%' OR m.description LIKE '%" +wanted+ "%'";
+		Query query = connector.getSession().createQuery(hql);
+		return query.list();
+	
+	}
+
 
 }
 

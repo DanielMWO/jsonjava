@@ -139,7 +139,18 @@ public class MeetingRestController {
 	
 	//Sotriowanie listy spotkan po tytule GET/meetings?Sorted
 	
+	//Pobieranie  wszytskich spotkań  GET /meetings
+	@RequestMapping(value = "/sorted", method = RequestMethod.GET)
+	public ResponseEntity<?> getMeetingsSorted() {
+		Collection<Meeting> meetings = meetingService.getAllSortedByTitle();
+		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+	}
 	//przesukiwanie listy spotkań po  tytule i opisie GET/meetig?incudeng dupa
+	@RequestMapping(value = "/search={wanted}", method = RequestMethod.GET)
+	public ResponseEntity<?> searchMeetings(@PathVariable("wanted") String wanted) {
+		Collection<Meeting> meetings = meetingService.search(wanted);
+		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.FOUND);
+	}
 	
 	//przeszukiwanie listy spotkań po zapisanym uczetsniku GET /meetings includes user
 	
