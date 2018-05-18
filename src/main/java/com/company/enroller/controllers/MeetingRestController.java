@@ -53,8 +53,10 @@ public class MeetingRestController {
 	//Dodawanie uczetnika do spotkania  PUT /meetings/2/participants
 	//Modify to accept login as JSON not TEXT 
 	//Modifi so that participant cannot be added twice
-	@RequestMapping(value="/{id}/participants", method = RequestMethod.PUT)
-	public ResponseEntity<?> addParticipantToMeeting(@PathVariable("id") long id, @RequestBody String  participantLogin) {
+	@RequestMapping(value="/{id}/participants/{login}", method = RequestMethod.PUT)
+	public ResponseEntity<?> addParticipantToMeeting(
+			@PathVariable("id") long id, 
+			@PathVariable("login")  String participantLogin) {
 		if (participantService.findByLogin(participantLogin)==null) 
 				{return new ResponseEntity("Particibant by login: " + participantLogin + "does not exist", HttpStatus.NOT_ACCEPTABLE);
 			}
