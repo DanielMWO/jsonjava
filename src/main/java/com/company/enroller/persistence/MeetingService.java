@@ -1,6 +1,8 @@
 package com.company.enroller.persistence;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Transaction;
@@ -95,7 +97,28 @@ public class MeetingService {
 		Query query = connector.getSession().createQuery(hql);
 		return query.list();
 	
+	
 	}
+
+	public Collection<Meeting> searchParticipant(Participant participant) {
+		//Collection<Meeting> allMeetings = connector.getSession().createCriteria(Meeting.class).list();
+		String hql = "FROM Meeting";
+		Query query = connector.getSession().createQuery(hql);
+		Collection<Meeting> allMeetings = query.list();
+		if (allMeetings.size() == 0) {
+			System.out.println("NieMA");	
+			return allMeetings;
+		}
+		for (Meeting meeting : allMeetings) {
+			if (meeting.getParticipants().contains(participant) == false) {
+				allMeetings.remove(meeting);
+			}
+				
+		}
+		return allMeetings;
+		
+		// TODO Auto-generated method stub
+			}
 
 
 }

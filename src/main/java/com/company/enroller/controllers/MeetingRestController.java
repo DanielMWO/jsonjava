@@ -149,10 +149,20 @@ public class MeetingRestController {
 	@RequestMapping(value = "/search={wanted}", method = RequestMethod.GET)
 	public ResponseEntity<?> searchMeetings(@PathVariable("wanted") String wanted) {
 		Collection<Meeting> meetings = meetingService.search(wanted);
-		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.FOUND);
+		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
 	}
 	
 	//przeszukiwanie listy spotkań po zapisanym uczetsniku GET /meetings includes user
+	@RequestMapping(value = "/particpantlogin/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> searchMeetingsByUserLogin(@PathVariable("id") String login) {
+		Participant participant = participantService.findByLogin(login);
+		if (participant.equals(null)) {
+			return new ResponseEntity("Participant not found in meeting", HttpStatus.NOT_FOUND);
+		}
+		
+		Collection<Meeting> meetings = meetingService.searchParticipant(participant);
+		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+	}
 	
 	
 	
