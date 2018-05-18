@@ -32,12 +32,12 @@ public class MeetingService {
 		
 
 	public void addParticipant(long id, Participant participant) {
-
 		Meeting meeting  = (Meeting) connector.getSession().get(Meeting.class, id);
 		Transaction transaction = connector.getSession().beginTransaction();
 		meeting.addParticipant(participant);
 		connector.getSession().save(meeting);
 		transaction.commit();
+
 	}
 
 	public Collection<Participant> getParticipants(long id) {
@@ -50,6 +50,35 @@ public class MeetingService {
 	Transaction tmpTransaction = connector.getSession().beginTransaction();
 		connector.getSession().save(meeting);
     tmpTransaction.commit();
+		
+	}
+
+	public void update(long id, Meeting meeting) {
+		// TODO Auto-generated method stub
+		Meeting tmpMeeting  = (Meeting) connector.getSession().get(Meeting.class, id);
+		Transaction transaction = connector.getSession().beginTransaction();
+		tmpMeeting.setDate(meeting.getDate());
+		tmpMeeting.setTitle(meeting.getTitle());
+		tmpMeeting.setDescription(meeting.getDescription());
+		connector.getSession().save(tmpMeeting);
+		transaction.commit();
+		
+	}
+
+	public void delete(Meeting meeting) {
+		Transaction transaction = connector.getSession().beginTransaction();
+		connector.getSession().delete(meeting);
+		transaction.commit();
+				
+	}
+
+	public void removeParticipant(long id, Participant participant) {
+		// TODO Auto-generated method stub
+		Meeting meeting  = (Meeting) connector.getSession().get(Meeting.class, id);
+		Transaction transaction = connector.getSession().beginTransaction();
+		meeting.removeParticipant(participant);
+		connector.getSession().save(meeting);
+		transaction.commit();
 		
 	}
 

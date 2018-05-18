@@ -25,12 +25,14 @@ public class MeetingRestController {
 	@Autowired
 	ParticipantService participantService;
 	
+	//Pobieranie  wszytskich spotkań  GET /meetings
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<?> getMeetings() {
 		Collection<Meeting> meetings = meetingService.getAll();
 		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
 	}
 
+	//Pobieranie spotkania GET /meetings/2
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getMeetinsById(@PathVariable("id") long id) {
 		Meeting meeting = meetingService.findByID(id);
@@ -39,7 +41,7 @@ public class MeetingRestController {
 		}
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
 	}	
-	
+	//Dodawanie spotkania POST /meetings/
 	@RequestMapping(value="", method = RequestMethod.POST)
 	public ResponseEntity<?> addMeeting(@RequestBody Meeting meeting) {
 		if (meetingService.findByID(meeting.getId()) == null) {
@@ -48,6 +50,7 @@ public class MeetingRestController {
 			}
 		else {return new ResponseEntity("Meeting already exists", HttpStatus.CONFLICT);}
 	}
+	//Dodawanie uczetnika do spotkania  PUT /meetings/2/participants
 	//Modify to accept login as JSON not TEXT 
 	//Modifi so that participant cannot be added twice
 	@RequestMapping(value="/{id}/participants", method = RequestMethod.PUT)
@@ -66,6 +69,7 @@ public class MeetingRestController {
 			return new ResponseEntity(HttpStatus.OK);
 		}
 	}
+	//Pobieranie uczestników sppotkania GET /meetings/2/participants
 	@RequestMapping(value="/{id}/participants", method = RequestMethod.GET)
 	public ResponseEntity<?> getParticipantsOfMeeting(@PathVariable("id") long id) {
 		if (meetingService.findByID(id)== null) {
@@ -78,5 +82,65 @@ public class MeetingRestController {
 			return new ResponseEntity(participants, HttpStatus.OK);
 		}
 	}
+	
+	//Usuwanie spotkań  DELETE /meetings/{id} 
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteMeeting(@PathVariable("id") long id) {
+		Meeting meeting = meetingService.findByID(id);
+		if (meeting == null) {
+			return new ResponseEntity("Meeting not found", HttpStatus.NOT_FOUND);
+		}
+		
+		meetingService.delete(meeting);
+		return new ResponseEntity("Meetining by id: " + meeting.getId() + " deleted", HttpStatus.OK);
+	}	
+	
+	
+	
+	//Aktualizacja spotkań  PUT /meetings/{id}
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<?> updateMeeting(@PathVariable("id") long id, @RequestBody Meeting meeting) {
+		Meeting tmpMeeting = meetingService.findByID(id);
+		if (tmpMeeting == null) {
+			return new ResponseEntity("Meeting not found", HttpStatus.NOT_FOUND);
+		}
+		
+		meetingService.update(id, meeting);
+		return new ResponseEntity("Meetining by id: " + meeting.getId() + " updated", HttpStatus.OK);
+	}	
+	
+
+
+	//Usuwanie uczersnika ze spotkania DELETE /meetings/{id}/participants/{login}
+	@RequestMapping(value = "/{id}/participants/{login}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> removeUserFormMeetig(
+			@PathVariable("id") long id, 
+			@PathVariable("login") String login
+			) {
+		Meeting tmpMeeting = meetingService.findByID(id);
+		Participant participant = participantService.findByLogin(login);
+		Collection<Participant> tmpParticipants = meetingService.getParticipants(id);
+		
+		if (tmpMeeting == null) {
+		return new ResponseEntity("Meeting not found", HttpStatus.NOT_FOUND);
+		
+		}
+		
+		if (tmpParticipants.isEmpty() == true) {
+			return new ResponseEntity("Participant not found in meeting", HttpStatus.NOT_FOUND);
+		}
+		
+		meetingService.removeParticipant(id, participant);
+		return new ResponseEntity("Patrticipant removed", HttpStatus.OK);
+	}	
+	
+	
+	//Sotriowanie listy spotkan po tytule GET/meetings?Sorted
+	
+	//przesukiwanie listy spotkań po  tytule i opisie GET/meetig?incudeng dupa
+	
+	//przeszukiwanie listy spotkań po zapisanym uczetsniku GET /meetings includes user
+	
+	
 	
 }
